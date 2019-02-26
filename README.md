@@ -1,15 +1,46 @@
 # Front End Unit Testing Style Guide 
-### BDD with Jasmine/Jest For TypeScript (Angular)
+#### BDD with Jest/Jasmine/Mocha For TypeScript (Angular)
 
 ## Purpose
 
 The purpose of this style guide is to offer suggested best practices when writing Front End unit tests using Jasmine and Jest.
 
-## Contributing
+## Introduction
 
-This style guide ultimately represents the opinions of its contributors. If you disagree with anything, or wish to add more, please create an issue or submit a pull request. Our goal is to continuously improve the guide and build consensus around it.
+Jest is the spec-style unit testing library following Behaviour Driven Development (BDD) principles. It's API is almost fully compatible with Jasmine and Mocha API, so the basic principles described here can be used for all the three mentioned unit testing frameworks. This document governs three main parts of the unit testing process for the needs of Front End Development:
 
-## Rules
+* Code preparation 
+* Evaluating the scope of testing
+* Scaffolding the environment and tools
+* Writing unit tests
+
+## Best practices for providing code testability
+
+1. All the code files should follow the Single Responsibility Principle and Separation of Concerns Principle
+1. API methods should not be tightly coupled with the specific implementation (data sources)
+1. Pure functions should be preferred when writing the API methods
+1. Methods should be decomposed as much as possible
+1. Business logic should be delegated from components to services as much as possible
+1. All the API methods and properties should use types/enums/interfaces (including method attributes and return values)
+1. Code inside a file should be documented ("as much as needed but not more" (c) Albert Einstein) prior to be tested
+
+## Requirements for test coverage
+
+1. Priority chain for code base test coverage: CORE -> SHARED -> MODULES
+1. All the components and services should be covered with smoke tests (at least)
+1. Service API should be covered with tests
+1. Only the publicly-exposed API should be tested 
+
+## Environment-related requirements
+
+1. Each `*.spec.ts` file with specific test suite in it should be placed along with the component/service/etc being tested and named accordingly
+1. Uppermost `describe` block of the test suite should be named after component/service/etc being tested to find the source of fail faster after test runs
+1. Test should be run in isolation - all the dependencies should be doubled (mocked/stubbed)
+1. Avoid mocks (focusing on internals) in favor of stubs and spies (focusing on requirements/specific functionality)
+1. Minimize external helpers and abstractions
+1. Avoid global test fixtures and seeds, add data per-test
+
+## Rules for writing the tests
 
 1. [Speak Human](#speak-human)
 1. [Write _Unit_ Tests](#write-unit-tests)
@@ -19,6 +50,7 @@ This style guide ultimately represents the opinions of its contributors. If you 
 1. [Avoid the `All`s](#avoid-the-alls)
 1. [Be `describe`tive](#be-describetive)
 1. [Write Minimum Passable Tests](#write-minimum-passable-tests)
+1. [Randomize input data](#randomize-input-data)
 
 ### Speak Human
 
@@ -426,3 +458,15 @@ describe('Array.prototype', function() {
   });
 });
 ```
+
+### Randomize input data
+
+Avoid using "foo", use realistic complex input data instead ("$%JAFADF1313**@")
+
+#### Why?
+
+* Bugs are caught earlier
+
+## Contributing
+
+This style guide ultimately represents the opinions of its contributors. If you disagree with anything, or wish to add more, please create an issue or submit a pull request. Our goal is to continuously improve the guide and build consensus around it.
