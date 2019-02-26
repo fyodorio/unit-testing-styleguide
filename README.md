@@ -1,9 +1,9 @@
 # Front End Unit Testing Style Guide 
-#### BDD with Jest/Jasmine/Mocha For TypeScript (Angular)
+#### BDD with Jest/Jasmine/Mocha For TypeScript/Angular
 
 ## Purpose
 
-The purpose of this style guide is to offer suggested best practices when writing Front End unit tests using Jest, Jasmine or Mocha and TypeScript.
+The purpose of this style guide is to offer suggested best practices when writing Front End unit tests using Jest, Jasmine or Mocha. Though this styleguide is written specifically for using with TypeScript and Angular, most of its concepts can be applied to testing under a wide range of different JavaScript technologies and code bases.
 
 ## Introduction
 
@@ -33,15 +33,17 @@ Jest is the spec-style unit testing library following Behaviour Driven Developme
 
 ## Environment-related requirements
 
-1. Each `*.spec.ts` file with specific test suite in it should be placed along with the component/service/etc being tested and named accordingly
+1. Each `*.spec.ts` file with specific test suite in it should be placed alongside the component/service/etc being tested and named accordingly
 1. Uppermost `describe` block of the test suite should be named after component/service/etc being tested to find the source of fail faster after test runs
 1. Test should be run in isolation - all the dependencies should be doubled (mocked/stubbed)
 1. Avoid mocks (focusing on internals) in favor of stubs and spies (focusing on requirements/specific functionality)
 1. Minimize external helpers and abstractions
 1. Avoid global test fixtures and seeds, add data per-test
+1. Use Angular utilities (from `@angular/core/testing`) to pre-compile the Angular-specific code (e.g. `TestBed` and `ComponentFixture` for scaffolding, `async` for make compilation asynchronous and wait for it) and get access to internals of the pre-compiled test fixtures (e.g. `detectChanges` which isn't run automatically, or `debugElement` which allows to access DOM and produce events)
 
 ## Rules for writing the tests
 
+1. [Testing Is Easy](#testing-is-easy)
 1. [Speak Human](#speak-human)
 1. [Write _Unit_ Tests](#write-unit-tests)
 1. [Arrange-Act-Assert](#arrange-act-assert)
@@ -51,6 +53,29 @@ Jest is the spec-style unit testing library following Behaviour Driven Developme
 1. [Be `describe`tive](#be-describetive)
 1. [Write Minimum Passable Tests](#write-minimum-passable-tests)
 1. [Randomize input data](#randomize-input-data)
+
+### Testing Is Easy
+
+Don't be afraid to write unit test, and don't overthink the process: 
+
+1. `describe` what your testing. This is your test `suite`.
+1. `it` should have some expected behaviors. These are your `specs`.
+1. `expect` or assert these behaviors to hold true. These are your `expectations`
+
+```typescript
+describe('MyAwesomeComponent', () => {
+  beforeEach( () => {
+    // reproduce the test state
+  })
+
+  it('should be awesome', () => {
+    expect(component).toBe(awesome)
+  });
+
+  // More specs here
+
+})
+````
 
 ### Speak Human
 
@@ -64,11 +89,11 @@ Label your test suites (`describe` blocks) and specs (`it` blocks) in a way that
 
 #### Bad:
 
-```javascript
+```typescript
 // Output: "Array adds to the end"
-describe('Array', function() {
-  it('adds to the end', function() {
-    var initialArray = [1];
+describe('Array', () => {
+  it('adds to the end', () => {
+    const initialArray = [1];
     initialArray.push(2);
     expect(initialArray).toEqual([1, 2]);
   });
@@ -77,12 +102,12 @@ describe('Array', function() {
 
 #### Better:
 
-```javascript
+```typescript
 // Output: "Array.prototype .push(x) appends x to the end of the Array"
-describe('Array.prototype', function() {
-  describe('.push(x)', function() {
-    it('appends x to the end of the Array', function() {
-      var initialArray = [1];
+describe('Array.prototype', () => {
+  describe('.push(x)', () => {
+    it('appends x to the end of the Array', () => {
+      const initialArray = [1];
       initialArray.push(2);
       expect(initialArray).toEqual([1, 2]);
     });
@@ -101,11 +126,11 @@ A unit test should test **one** thing. Confine your `it` blocks to a single asse
 
 #### Bad:
 
-```javascript
-describe('Array.prototype', function() {
-  describe('.push(x)', function() {
-    it('appends x to the end of the Array and returns it', function() {
-      var initialArray = [1];
+```typescript
+describe('Array.prototype', () => {
+  describe('.push(x)', () => {
+    it('appends x to the end of the Array and returns it', () => {
+      const initialArray = [1];
       expect(initialArray.push(2)).toBe(2);
       expect(initialArray).toEqual([1, 2]);
     });
@@ -115,17 +140,17 @@ describe('Array.prototype', function() {
 
 #### Better:
 
-```ts
-describe('Array.prototype', function() {
-  describe('.push(x)', function() {
-    it('appends x to the end of the Array', function() {
-      var initialArray = [1];
+```typescript
+describe('Array.prototype', () => {
+  describe('.push(x)', () => {
+    it('appends x to the end of the Array', () => {
+      const initialArray = [1];
       initialArray.push(2);
       expect(initialArray).toEqual([1, 2]);
     });
 
-    it('returns x', function() {
-      var initialArray = [1];
+    it('returns x', () => {
+      const initialArray = [1];
       expect(initialArray.push(2)).toBe(2);
     });
   });
@@ -143,11 +168,11 @@ Organize your code in a way that clearly conveys the 3 A's of each unit test. On
 
 #### Bad:
 
-```ts
-describe('Array.prototype', function() {
-  describe('.push(x)', function() {
-    it('appends x to the end of the Array', function() {
-      var initialArray = [1];
+```typescript
+describe('Array.prototype', () => {
+  describe('.push(x)', () => {
+    it('appends x to the end of the Array', () => {
+      const initialArray = [1];
       initialArray.push(2);
       expect(initialArray).toEqual([1, 2]);
     });
@@ -157,18 +182,18 @@ describe('Array.prototype', function() {
 
 #### Better:
 
-```ts
-describe('Array.prototype', function() {
-  describe('.push(x)', function() {
-    var initialArray;
+```typescript
+describe('Array.prototype', () => {
+  describe('.push(x)', () => {
+    let initialArray;
 
-    beforeEach(function() {
+    beforeEach(() => {
       initialArray = [1]; // Arrange
 
       initialArray.push(2); // Act
     });
 
-    it('appends x to the end of the Array', function() {
+    it('appends x to the end of the Array', () => {
       expect(initialArray).toEqual([1, 2]); // Assert
     });
   });
@@ -187,17 +212,17 @@ Use `before`/`after` blocks to DRY up repeated setup, teardown, and action code.
 
 #### Bad:
 
-```ts
-describe('Array.prototype', function() {
-  describe('.push(x)', function() {
-    it('appends x to the end of the Array', function() {
-      var initialArray = [1];
+```typescript
+describe('Array.prototype', () => {
+  describe('.push(x)', () => {
+    it('appends x to the end of the Array', () => {
+      const initialArray = [1];
       initialArray.push(2);
       expect(initialArray).toEqual([1, 2]);
     });
 
-    it('returns x', function() {
-      var initialArray = [1];
+    it('returns x', () => {
+      const initialArray = [1];
       expect(initialArray.push(2)).toBe(2);
     });
   });
@@ -206,23 +231,23 @@ describe('Array.prototype', function() {
 
 #### Better:
 
-```ts
-describe('Array.prototype', function() {
-  describe('.push(x)', function() {
-    var initialArray,
+```typescript
+describe('Array.prototype', () => {
+  describe('.push(x)', () => {
+    let initialArray,
         pushResult;
 
-    beforeEach(function() {
+    beforeEach(() => {
       initialArray = [1];
 
       pushResult = initialArray.push(2);
     });
 
-    it('appends x to the end of the Array', function() {
+    it('appends x to the end of the Array', () => {
       expect(initialArray).toEqual([1, 2]);
     });
 
-    it('returns x', function() {
+    it('returns x', () => {
       expect(pushResult).toBe(2);
     });
   });
@@ -236,27 +261,27 @@ Use `this` to share variables between `it` and `before`/`after` blocks.
 #### Why?
 
 * Declare and initialize variables on one line
-* Jasmine automatically cleans the `this` object between specs to avoid state leak
+* Most testing frameworks automatically clean the `this` object between specs to avoid state leak
 
 #### Bad:
 
-```ts
-describe('Array.prototype', function() {
-  describe('.push(x)', function() {
-    var initialArray,
+```typescript
+describe('Array.prototype', () => {
+  describe('.push(x)', () => {
+    let initialArray,
         pushResult;
 
-    beforeEach(function() {
+    beforeEach(() => {
       initialArray = [1];
 
       pushResult = initialArray.push(2);
     });
 
-    it('appends x to the end of the Array', function() {
+    it('appends x to the end of the Array', () => {
       expect(initialArray).toEqual([1, 2]);
     });
 
-    it('returns x', function() {
+    it('returns x', () => {
       expect(pushResult).toBe(2);
     });
   });
@@ -265,20 +290,20 @@ describe('Array.prototype', function() {
 
 #### Better:
 
-```ts
-describe('Array.prototype', function() {
-  describe('.push(x)', function() {
-    beforeEach(function() {
+```typescript
+describe('Array.prototype', () => {
+  describe('.push(x)', () => {
+    beforeEach(() => {
       this.initialArray = [1];
 
       this.pushResult = this.initialArray.push(2);
     });
 
-    it('appends x to the end of the Array', function() {
+    it('appends x to the end of the Array', () => {
       expect(this.initialArray).toEqual([1, 2]);
     });
 
-    it('returns x', function() {
+    it('returns x', () => {
       expect(this.pushResult).toBe(2);
     });
   });
@@ -297,22 +322,22 @@ Prefer `beforeEach/afterEach` blocks over `beforeAll/afterAll` ones. The latter 
 
 #### Bad:
 
-```ts
-describe('Array.prototype', function() {
-  describe('.push(x)', function() {
-    beforeAll(function() {
+```typescript
+describe('Array.prototype', () => {
+  describe('.push(x)', () => {
+    beforeAll(() => {
       this.initialArray = [1];
     });
 
-    beforeEach(function() {
+    beforeEach(() => {
       this.pushResult = this.initialArray.push(2);
     });
 
-    it('appends x to the end of the Array', function() {
+    it('appends x to the end of the Array', () => {
       expect(this.initialArray).toEqual([1, 2]);
     });
 
-    it('returns x', function() {
+    it('returns x', () => {
       expect(this.pushResult).toBe(2);
     });
   });
@@ -321,20 +346,20 @@ describe('Array.prototype', function() {
 
 #### Better:
 
-```ts
-describe('Array.prototype', function() {
-  describe('.push(x)', function() {
-    beforeEach(function() {
+```typescript
+describe('Array.prototype', () => {
+  describe('.push(x)', () => {
+    beforeEach(() => {
       this.initialArray = [1];
 
       this.pushResult = this.initialArray.push(2);
     });
 
-    it('appends x to the end of the Array', function() {
+    it('appends x to the end of the Array', () => {
       expect(this.initialArray).toEqual([1, 2]);
     });
 
-    it('returns x', function() {
+    it('returns x', () => {
       expect(this.pushResult).toBe(2);
     });
   });
@@ -354,28 +379,28 @@ Nest `describe` blocks liberally to create functional subsets.
 
 #### Bad:
 
-```ts
-describe('Array.prototype', function() {
-  describe('.push(x) on an empty Array', function() {
-    beforeEach(function() {
+```typescript
+describe('Array.prototype', () => {
+  describe('.push(x) on an empty Array', () => {
+    beforeEach(() => {
       this.initialArray = [];
 
       this.initialArray.push(1);
     });
 
-    it('appends x to the Array', function() {
+    it('appends x to the Array', () => {
       expect(this.initialArray).toEqual([1]);
     });
   });
 
-  describe('.push(x) on a non-empty Array', function() {
-    beforeEach(function() {
+  describe('.push(x) on a non-empty Array', () => {
+    beforeEach(() => {
       this.initialArray = [1];
 
       this.initialArray.push(2);
     });
 
-    it('appends x to the end of the Array', function() {
+    it('appends x to the end of the Array', () => {
       expect(this.initialArray).toEqual([1, 2]);
     });
   });
@@ -384,29 +409,29 @@ describe('Array.prototype', function() {
 
 #### Better:
 
-```ts
-describe('Array.prototype', function() {
-  describe('.push(x)', function() {
-    describe('on an empty Array', function() {
-      beforeEach(function() {
+```typescript
+describe('Array.prototype', () => {
+  describe('.push(x)', () => {
+    describe('on an empty Array', () => {
+      beforeEach(() => {
         this.initialArray = [];
 
         this.initialArray.push(1);
       });
 
-      it('appends x to the Array', function() {
+      it('appends x to the Array', () => {
         expect(this.initialArray).toEqual([1]);
       });
     });
 
-    describe('on a non-empty Array', function() {
-      beforeEach(function() {
+    describe('on a non-empty Array', () => {
+      beforeEach(() => {
         this.initialArray = [1];
 
         this.initialArray.push(2);
       });
 
-      it('appends x to the end of the Array', function() {
+      it('appends x to the end of the Array', () => {
         expect(this.initialArray).toEqual([1, 2]);
       });
     });
@@ -416,7 +441,7 @@ describe('Array.prototype', function() {
 
 ### Write Minimum Passable Tests
 
-If appropriate, use Jasmine's built-in matchers (such as `toContain`, `jasmine.any`, `jasmine.stringMatching`, ...etc) to compare arguments and results. You can also create your own matcher via the `asymmetricMatch` function.
+If appropriate, use test framework's built-in matchers (such as `.toContain`, `.any`, `.stringMatching`, etc) to compare arguments and results. You can also create your own custom matcher functions.
 
 #### Why?
 
@@ -425,16 +450,16 @@ If appropriate, use Jasmine's built-in matchers (such as `toContain`, `jasmine.a
 
 #### Bad:
 
-```ts
-describe('Array.prototype', function() {
-  describe('.push(x)', function() {
-    beforeEach(function() {
+```typescript
+describe('Array.prototype', () => {
+  describe('.push(x)', () => {
+    beforeEach(() => {
       this.initialArray = [];
 
       this.initialArray.push(1);
     });
 
-    it('appends x to the Array', function() {
+    it('appends x to the Array', () => {
       expect(this.initialArray).toEqual([1]);
     });
   });
@@ -443,16 +468,16 @@ describe('Array.prototype', function() {
 
 #### Better:
 
-```ts
-describe('Array.prototype', function() {
-  describe('.push(x)', function() {
-    beforeEach(function() {
+```typescript
+describe('Array.prototype', () => {
+  describe('.push(x)', () => {
+    beforeEach(() => {
       this.initialArray = [];
 
       this.initialArray.push(1);
     });
 
-    it('appends x to the Array', function() {
+    it('appends x to the Array', () => {
       expect(this.initialArray).toContain(1);
     });
   });
