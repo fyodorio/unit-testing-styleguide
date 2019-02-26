@@ -1,4 +1,4 @@
-# Jasmine Style Guide
+# Jasmine TypeScript Style Guide
 
 ## Purpose
 
