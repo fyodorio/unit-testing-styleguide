@@ -1,8 +1,9 @@
-# Jasmine TypeScript Style Guide
+# Front End Unit Testing Style Guide 
+### BDD with Jasmine/Jest For TypeScript (Angular)
 
 ## Purpose
 
-The purpose of this style guide is to offer suggested best practices when writing Jasmine unit tests.
+The purpose of this style guide is to offer suggested best practices when writing Front End unit tests using Jasmine and Jest.
 
 ## Contributing
 
@@ -82,7 +83,7 @@ describe('Array.prototype', function() {
 
 #### Better:
 
-```javascript
+```ts
 describe('Array.prototype', function() {
   describe('.push(x)', function() {
     it('appends x to the end of the Array', function() {
@@ -110,7 +111,7 @@ Organize your code in a way that clearly conveys the 3 A's of each unit test. On
 
 #### Bad:
 
-```javascript
+```ts
 describe('Array.prototype', function() {
   describe('.push(x)', function() {
     it('appends x to the end of the Array', function() {
@@ -124,7 +125,7 @@ describe('Array.prototype', function() {
 
 #### Better:
 
-```javascript
+```ts
 describe('Array.prototype', function() {
   describe('.push(x)', function() {
     var initialArray;
@@ -154,7 +155,7 @@ Use `before`/`after` blocks to DRY up repeated setup, teardown, and action code.
 
 #### Bad:
 
-```javascript
+```ts
 describe('Array.prototype', function() {
   describe('.push(x)', function() {
     it('appends x to the end of the Array', function() {
@@ -173,7 +174,7 @@ describe('Array.prototype', function() {
 
 #### Better:
 
-```javascript
+```ts
 describe('Array.prototype', function() {
   describe('.push(x)', function() {
     var initialArray,
@@ -207,7 +208,7 @@ Use `this` to share variables between `it` and `before`/`after` blocks.
 
 #### Bad:
 
-```javascript
+```ts
 describe('Array.prototype', function() {
   describe('.push(x)', function() {
     var initialArray,
@@ -232,7 +233,7 @@ describe('Array.prototype', function() {
 
 #### Better:
 
-```javascript
+```ts
 describe('Array.prototype', function() {
   describe('.push(x)', function() {
     beforeEach(function() {
@@ -264,7 +265,7 @@ Prefer `beforeEach/afterEach` blocks over `beforeAll/afterAll` ones. The latter 
 
 #### Bad:
 
-```javascript
+```ts
 describe('Array.prototype', function() {
   describe('.push(x)', function() {
     beforeAll(function() {
@@ -288,7 +289,7 @@ describe('Array.prototype', function() {
 
 #### Better:
 
-```javascript
+```ts
 describe('Array.prototype', function() {
   describe('.push(x)', function() {
     beforeEach(function() {
@@ -321,7 +322,7 @@ Nest `describe` blocks liberally to create functional subsets.
 
 #### Bad:
 
-```javascript
+```ts
 describe('Array.prototype', function() {
   describe('.push(x) on an empty Array', function() {
     beforeEach(function() {
@@ -351,7 +352,7 @@ describe('Array.prototype', function() {
 
 #### Better:
 
-```javascript
+```ts
 describe('Array.prototype', function() {
   describe('.push(x)', function() {
     describe('on an empty Array', function() {
@@ -392,7 +393,7 @@ If appropriate, use Jasmine's built-in matchers (such as `toContain`, `jasmine.a
 
 #### Bad:
 
-```javascript
+```ts
 describe('Array.prototype', function() {
   describe('.push(x)', function() {
     beforeEach(function() {
@@ -410,7 +411,7 @@ describe('Array.prototype', function() {
 
 #### Better:
 
-```javascript
+```ts
 describe('Array.prototype', function() {
   describe('.push(x)', function() {
     beforeEach(function() {
