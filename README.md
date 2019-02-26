@@ -1,9 +1,9 @@
 # Front End Unit Testing Style Guide 
-#### BDD with Jest/Jasmine/Mocha For TypeScript/Angular
+#### BDD with Jest/Jasmine/Mocha for TypeScript/Angular
 
 ## Purpose
 
-The purpose of this style guide is to offer suggested best practices when writing Front End unit tests using Jest, Jasmine or Mocha. Though this styleguide is written specifically for using with TypeScript and Angular, most of its concepts can be applied to testing under a wide range of different JavaScript technologies and code bases.
+The purpose of this style guide is to offer suggested best practices when writing Front End unit tests using Jest, Jasmine or Mocha. Though this Style Guide is written specifically for using with TypeScript and Angular, most of its concepts can be applied to testing under a wide range of different JavaScript technologies and code bases.
 
 ## Introduction
 
@@ -16,7 +16,7 @@ Jest is the spec-style unit testing library following Behaviour Driven Developme
 
 ## Best practices for providing code testability
 
-1. All the code files should follow the Single Responsibility Principle and Separation of Concerns Principle
+1. All the code architecture should follow the Single Responsibility Principle to achieve Separation of Concerns inside of it 
 1. API methods should not be tightly coupled with the specific implementation (data sources)
 1. Pure functions should be preferred when writing the API methods
 1. Methods should be decomposed as much as possible
@@ -486,11 +486,11 @@ describe('Array.prototype', () => {
 
 ### Randomize input data
 
-Avoid using "foo", use realistic complex input data instead ("$%JAFADF1313**@")
+Avoid using `"foo"`, use realistic complex input data instead (`"$%JAFADF1313**@"`)
 
 #### Why?
 
-* Bugs are caught earlier
+* Data complexity related bugs are caught earlier this way
 
 ## Contributing
 
