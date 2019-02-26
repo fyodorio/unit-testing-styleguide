@@ -3,16 +3,16 @@
 
 ## Purpose
 
-The purpose of this style guide is to offer suggested best practices when writing Front End unit tests using Jasmine and Jest.
+The purpose of this style guide is to offer suggested best practices when writing Front End unit tests using Jest, Jasmine or Mocha and TypeScript.
 
 ## Introduction
 
 Jest is the spec-style unit testing library following Behaviour Driven Development (BDD) principles. It's API is almost fully compatible with Jasmine and Mocha API, so the basic principles described here can be used for all the three mentioned unit testing frameworks. This document governs three main parts of the unit testing process for the needs of Front End Development:
 
-* Code preparation 
-* Evaluating the scope of testing
-* Scaffolding the environment and tools
-* Writing unit tests
+* [Code preparation](#best-practices-for-providing-code-testability)
+* [Evaluating the scope of testing](#requirements-for-test-coverage)
+* [Scaffolding the environment and tools](#environment-related-requirements)
+* [Writing unit tests](#rules-for-writing-the-tests)
 
 ## Best practices for providing code testability
 
